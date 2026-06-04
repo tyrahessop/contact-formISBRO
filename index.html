@@ -7,21 +7,36 @@
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'Outfit', sans-serif; background: #0a1628; -webkit-text-size-adjust: 100%; }
 
-    .contact-section {
-      position: relative; min-height: 100vh; display: flex;
-      align-items: center; overflow: hidden;
+    /* FIX: html and body must not clip or add extra scroll */
+    html, body {
+      font-family: 'Outfit', sans-serif;
+      background: #0a1628;
+      -webkit-text-size-adjust: 100%;
+      /* Remove any height:100% that causes clipping inside iframes */
+      height: auto;
+      min-height: 100%;
+      overflow-x: hidden;
     }
 
-    /* Deep navy + electric blue brand palette */
+    .contact-section {
+      position: relative;
+      /* FIX: use min-height with auto fallback — never cuts off content */
+      min-height: 100vh;
+      min-height: -webkit-fill-available; /* iOS Safari fix */
+      display: flex;
+      align-items: center;
+      /* FIX: allow section to grow beyond viewport on small screens */
+      height: auto;
+      overflow: visible;
+    }
+
     .bg-fallback {
       position: absolute; inset: 0;
       background: linear-gradient(135deg, #0a1628 0%, #0d1f3c 50%, #091422 100%);
       z-index: 0;
     }
 
-    /* Subtle circuit / electrical pattern overlay */
     .contact-section::before {
       content: ''; position: absolute; inset: 0; z-index: 1;
       background-image:
@@ -30,7 +45,6 @@
         radial-gradient(ellipse at 50% 100%, rgba(0,82,204,0.08) 0%, transparent 60%);
     }
 
-    /* Decorative electrical bolt accent */
     .bolt-accent {
       position: absolute; right: -60px; top: 50%; transform: translateY(-50%);
       width: 340px; height: 340px; z-index: 1; opacity: 0.04;
@@ -45,8 +59,6 @@
     }
 
     /* ── LEFT COLUMN ── */
-    .left-col {}
-
     .brand-badge {
       display: inline-flex; align-items: center; gap: 8px;
       background: rgba(30,144,255,0.12); border: 1px solid rgba(30,144,255,0.25);
@@ -92,7 +104,6 @@
       background: rgba(30,144,255,0.15); display: flex; align-items: center;
       justify-content: center; font-size: 1rem; flex-shrink: 0;
     }
-    .card-text {}
     .card-text .label { font-size: 0.7rem; color: rgba(255,255,255,0.4); font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 1px; }
     .card-text a, .card-text p {
       font-size: 0.9rem; color: rgba(255,255,255,0.85); text-decoration: none;
@@ -115,9 +126,7 @@
     }
 
     .form-header { margin-bottom: 24px; }
-    .form-title {
-      font-size: 1.2rem; font-weight: 700; color: #fff; margin-bottom: 4px;
-    }
+    .form-title { font-size: 1.2rem; font-weight: 700; color: #fff; margin-bottom: 4px; }
     .form-subtitle { font-size: 0.82rem; color: rgba(255,255,255,0.4); }
 
     .divider {
@@ -169,15 +178,36 @@
 
     /* ── RESPONSIVE ── */
     @media (max-width: 900px) { .container { gap: 40px; padding: 40px 28px; } }
+
     @media (max-width: 640px) {
-      .contact-section { align-items: flex-start; }
-      .container { grid-template-columns: 1fr; gap: 32px; padding: 36px 20px; }
+      /* FIX: section should not enforce viewport height on mobile — let content dictate height */
+      .contact-section {
+        align-items: flex-start;
+        min-height: unset;
+        padding: 0;
+      }
+
+      .container {
+        grid-template-columns: 1fr;
+        gap: 32px;
+        /* FIX: enough padding to breathe, not so much it pushes content off screen */
+        padding: 28px 18px 40px;
+      }
+
       .left-col h2 { font-size: 1.6rem; margin-bottom: 8px; }
-      .right-col { padding: 24px 20px; }
+      .right-col { padding: 24px 18px; }
+
       .form-row { grid-template-columns: 1fr; gap: 12px; }
       .bottom-row { grid-template-columns: 1fr; gap: 12px; }
+
       .btn-send { padding: 15px; font-size: 1rem; }
       .bolt-accent { display: none; }
+    }
+
+    /* FIX: extra small screens / short viewports */
+    @media (max-width: 380px) {
+      .container { padding: 20px 14px 32px; }
+      .right-col { padding: 20px 14px; }
     }
   </style>
 </head>
@@ -217,15 +247,15 @@
           <div class="card-icon">✉️</div>
           <div class="card-text">
             <div class="label">Email</div>
-            <a href="mailto:ibraheem@isbro-enterprise.org">tyrahessop@gmail.com</a>
+            <a href="mailto:info@Isbro-Enterprise.org">info@Isbro-Enterprise.org</a>
           </div>
         </div>
         <div class="contact-card">
           <div class="card-icon">📍</div>
           <div class="card-text">
             <div class="label">Address</div>
-            <a href="https://www.google.com/maps/place/Boland+Bank+Bldg,+18+Lower+Burg+St,+Central,+Cape+Town,+8001/" target="_blank" rel="noopener">
-  Boland Bank Bldg, 18 Lower Burg St, Central, Cape Town, 8001</a>
+            <a href="https://www.google.com/maps/search/27+A+Concorde+Cres,+Matroosfontein,+Cape+Town,+7490" target="_blank" rel="noopener">
+              27A Concorde Cres, Matroosfontein, Cape Town, 7490</a>
           </div>
         </div>
       </div>
@@ -242,7 +272,7 @@
       <div class="divider"></div>
 
       <form id="contactForm" action="https://formspree.io/f/xaqpwkeb" method="POST">
-        <input type="hidden" name="_replyto" value="tyrahessop@gmail.com" />
+        <input type="hidden" name="_replyto" value="info@Isbro-Enterprise.org" />
         <input type="hidden" name="_subject" value="New Call Request – ISBRO Enterprise" />
 
         <div class="form-row">
